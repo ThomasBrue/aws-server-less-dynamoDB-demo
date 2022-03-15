@@ -62,15 +62,15 @@ functions:
       - httpApi:
           method: POST
           path: /users/createCustomer
-  fetchCustomer:
-    handler: handler.fetchCustomer
+  getAllCustomers:
+    handler: handler.getAllCustomers
     events:
       - httpApi:
           method: GET
-          path: /users/fetchCustomer
+          path: /users/getAllCustomers
   getCustomer:
     handler: handler.getCustomer
     events:
       - httpApi:
           method: GET
-          path: /users/getCustomer
+          path: /users/getCustomer/{id}

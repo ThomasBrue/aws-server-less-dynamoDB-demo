@@ -119,7 +119,7 @@ module.exports.createCustomer = async (event, context, callback) => {
     });
 };
 
-//------FETCH CUSTOMER--------------------------------------------------------
+// ----UTILITY----------------------------------------------------------------------
 
 function response(statusCode, message) {
   return {
@@ -128,7 +128,9 @@ function response(statusCode, message) {
   };
 }
 
-module.exports.fetchCustomer = (event, context, callback) => {
+//------GET ALL CUSTOMER--------------------------------------------------------
+
+module.exports.getAllCustomers = (event, context, callback) => {
   return ddb
     .scan({
       TableName: "Customers",
@@ -140,10 +142,10 @@ module.exports.fetchCustomer = (event, context, callback) => {
     .catch((err) => callback(null, response(err.statusCode, err)));
 };
 
-// ------GET SINGLE POST------------------------------------------------------
+// ------GET SINGLE CUSTOMER------------------------------------------------------
 
 module.exports.getCustomer = (event, context, callback) => {
-  const id = "cd217971-123e-4fa1-8eb7-2206e6d63f7d";
+  const id = event.pathParameters.id;
 
   const params = {
     Key: {
@@ -157,7 +159,7 @@ module.exports.getCustomer = (event, context, callback) => {
     .promise()
     .then((res) => {
       if (res.Item) callback(null, response(200, res.Item));
-      else callback(null, response(404, { error: "Post not found" }));
+      else callback(null, response(404, { error: "Customer not found" }));
     })
     .catch((err) => callback(null, response(err.statusCode, err)));
 };
