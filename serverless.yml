@@ -56,3 +56,9 @@ functions:
       - httpApi:
           method: GET
           path: /users/write
+  addCustomer:
+    handler: handler.createCustomer
+    events:
+      - httpApi:
+          method: GET
+          path: /users/createCustomer

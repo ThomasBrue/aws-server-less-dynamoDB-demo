@@ -70,9 +70,57 @@ function createMessage(requestId) {
     TableName: "Message",
     Item: {
       messageId: requestId,
-      message: "Hello from lambda Yesssssssssssssss",
+      message: "Johny",
+      someValue: "hello dear",
     },
   };
 
   return ddb.put(params).promise();
 }
+
+// ----CREATE CUSTOMER---------------------------------------------------------------------------------
+
+module.exports.createCustomer = async (event, context, callback) => {
+  console.log("WriteMessage2 was called....................................");
+  const requestId = context.awsRequestId;
+
+  await createCustomerObj(requestId)
+    .then(() => {
+      callback(null, {
+        statusCode: 201,
+        body: "",
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+        },
+      });
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+};
+
+function createCustomerObj(reqId) {
+  const params = {
+    TableName: "Customers",
+    Item: {
+      id: reqId,
+      name: "Bobby",
+      iban: "AT00001" + Math.floor(Math.random() * 100),
+      address: {
+        street: "Sunnystreet 5",
+        city: "Vienna",
+        zipCode: "1130",
+      },
+    },
+  };
+
+  return ddb.put(params).promise();
+}
+
+//------FETCH CUSTOMER--------------------------------------------------------
+
+
+
+
+
+
