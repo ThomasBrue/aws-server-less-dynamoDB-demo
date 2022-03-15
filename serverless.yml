@@ -13,49 +13,7 @@ provider:
         - "dynamodb:*"
       Resource: "arn:aws:dynamodb:${self:provider.region}:*:table/*"
 
-# provider:
-#   name: aws
-#   runtime: nodejs6.10
-#   iamRoleStatements:
-#     - Effect: "Allow"
-#       Action:
-#        - dynamodb:Query
-#        - dynamodb:Scan
-#        - dynamodb:GetItem
-#        - dynamodb:PutItem
-#        - dynamodb:UpdateItem
-#        - dynamodb:DeleteItem
-#       Resource: "arn:aws:dynamodb:us-west-2:111110002222:table/my-new-table"
-
-# provider:
-#   name: aws
-#   runtime: nodejs12.x
-
 functions:
-  hello:
-    handler: handler.hello
-    events:
-      - httpApi:
-          method: GET
-          path: /users/create
-  info:
-    handler: handler.userInfo
-    events:
-      - httpApi:
-          method: GET
-          path: /users/info
-  eat:
-    handler: handler.eatApple
-    events:
-      - httpApi:
-          method: GET
-          path: /users/eat
-  writeMessage:
-    handler: handler.writeMessage2
-    events:
-      - httpApi:
-          method: GET
-          path: /users/write
   addCustomer:
     handler: handler.createCustomer
     events:
