@@ -124,48 +124,23 @@ module.exports.getReport = async (event, context, callback) => {
   const params = {
     TableName: "Transactions",
     ExpressionAttributeValues: {
-      ":ib": "AT000777",
+      ":ib": iban,
     },
     FilterExpression: "iban_to = :ib",
   };
-
-  // var params = {
-  //   TableName: "Transactions",
-  //   KeyConditionExpression: "#ib = :myIban",
-  //   ExpressionAttributeNames: {
-  //     "#ib": "iban_to",
-  //   },
-  //   ExpressionAttributeValues: {
-  //     ":myIban": "AT000888",
-  //   },
-  // };
-
-  // const result = await ddb.query(params).promise();
-  // console.log(result)
 
   return ddb
     .scan(params)
     .promise()
     .then((res) => {
-      if (res.Item) callback(null, response(200, res.Item));
+      if (res.Items) callback(null, response(200, res.Items));
       else
         callback(
           null,
           response(404, {
-            error:
-              "No transcations were found that match that iban." +
-              JSON.stringify(res),
+            error: "No transcations were found that match that iban.",
           })
         );
     })
     .catch((err) => callback(null, response(err.statusCode, err)));
-
-  // return ddb
-  //   .get(params)
-  //   .promise()
-  //   .then((res) => {
-  //     if (res.Item) callback(null, response(200, res.Item));
-  //     else callback(null, response(404, { error: "Customer not found" }));
-  //   })
-  //   .catch((err) => callback(null, response(err.statusCode, err)));
 };
