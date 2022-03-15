@@ -38,3 +38,9 @@ functions:
       - httpApi:
           method: POST
           path: /users/addTransaction
+  getReport:
+    handler: handler.getReport
+    events:
+      - httpApi:
+          method: GET
+          path: /users/getReport/{iban}

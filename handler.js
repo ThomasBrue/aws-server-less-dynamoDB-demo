@@ -114,3 +114,58 @@ module.exports.addTransaction = async (event, context, callback) => {
       console.error(err);
     });
 };
+
+//-----------------------------------------------------------------------------------------------------
+// ----GET REPORT--------------------------------------------------------------------------------------
+
+module.exports.getReport = async (event, context, callback) => {
+  const iban = event.pathParameters.iban;
+
+  const params = {
+    TableName: "Transactions",
+    ExpressionAttributeValues: {
+      ":ib": "AT000777",
+    },
+    FilterExpression: "iban_to = :ib",
+  };
+
+  // var params = {
+  //   TableName: "Transactions",
+  //   KeyConditionExpression: "#ib = :myIban",
+  //   ExpressionAttributeNames: {
+  //     "#ib": "iban_to",
+  //   },
+  //   ExpressionAttributeValues: {
+  //     ":myIban": "AT000888",
+  //   },
+  // };
+
+  // const result = await ddb.query(params).promise();
+  // console.log(result)
+
+  return ddb
+    .scan(params)
+    .promise()
+    .then((res) => {
+      if (res.Item) callback(null, response(200, res.Item));
+      else
+        callback(
+          null,
+          response(404, {
+            error:
+              "No transcations were found that match that iban." +
+              JSON.stringify(res),
+          })
+        );
+    })
+    .catch((err) => callback(null, response(err.statusCode, err)));
+
+  // return ddb
+  //   .get(params)
+  //   .promise()
+  //   .then((res) => {
+  //     if (res.Item) callback(null, response(200, res.Item));
+  //     else callback(null, response(404, { error: "Customer not found" }));
+  //   })
+  //   .catch((err) => callback(null, response(err.statusCode, err)));
+};
