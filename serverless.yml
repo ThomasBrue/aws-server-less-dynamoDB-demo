@@ -60,7 +60,7 @@ functions:
     handler: handler.createCustomer
     events:
       - httpApi:
-          method: GET
+          method: POST
           path: /users/createCustomer
   fetchCustomer:
     handler: handler.fetchCustomer
@@ -68,3 +68,9 @@ functions:
       - httpApi:
           method: GET
           path: /users/fetchCustomer
+  getCustomer:
+    handler: handler.getCustomer
+    events:
+      - httpApi:
+          method: GET
+          path: /users/getCustomer

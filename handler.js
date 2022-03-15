@@ -81,29 +81,26 @@ function createMessage(requestId) {
 // ----CREATE CUSTOMER---------------------------------------------------------------------------------
 
 module.exports.createCustomer = async (event, context, callback) => {
-  const requestId = context.awsRequestId;
+  const reqBody = JSON.parse(event.body);
 
-  // await createCustomerObj(requestId)
-  //   .then(() => {
-  //     callback(
-  //       null,
-  //       response(201, "Customer " + requestId + " has been created")
-  //     );
-  //   })
-  //   .catch((err) => {
-  //     console.error(err);
-  //   });
+  if (reqBody) {
+    console.log("hello");
+  }
+
+  // const reqBody = JSON.parse(event.body);
+
+  const requestId = context.awsRequestId;
 
   const params = {
     TableName: "Customers",
     Item: {
       id: requestId,
-      name: "Bobby",
-      iban: "AT00001" + Math.floor(Math.random() * 100),
+      name: reqBody.name,
+      iban: reqBody.iban,
       address: {
-        street: "Sunnystreet 5",
-        city: "Vienna",
-        zipCode: "1130",
+        street: reqBody.address.street,
+        city: reqBody.address.city,
+        zipCode: reqBody.address.zipCode,
       },
     },
   };
@@ -122,23 +119,6 @@ module.exports.createCustomer = async (event, context, callback) => {
     });
 };
 
-// function createCustomerObj(reqId) {
-//   const params = {
-//     TableName: "Customers",
-//     Item: {
-//       id: reqId,
-//       name: "Bobby",
-//       iban: "AT00001" + Math.floor(Math.random() * 100),
-//       address: {
-//         street: "Sunnystreet 5",
-//         city: "Vienna",
-//         zipCode: "1130",
-//       },
-//     },
-//   };
-
-// }
-
 //------FETCH CUSTOMER--------------------------------------------------------
 
 function response(statusCode, message) {
@@ -156,6 +136,28 @@ module.exports.fetchCustomer = (event, context, callback) => {
     .promise()
     .then((res) => {
       callback(null, response(200, res.Items));
+    })
+    .catch((err) => callback(null, response(err.statusCode, err)));
+};
+
+// ------GET SINGLE POST------------------------------------------------------
+
+module.exports.getCustomer = (event, context, callback) => {
+  const id = "cd217971-123e-4fa1-8eb7-2206e6d63f7d";
+
+  const params = {
+    Key: {
+      id: id,
+    },
+    TableName: "Customers",
+  };
+
+  return ddb
+    .get(params)
+    .promise()
+    .then((res) => {
+      if (res.Item) callback(null, response(200, res.Item));
+      else callback(null, response(404, { error: "Post not found" }));
     })
     .catch((err) => callback(null, response(err.statusCode, err)));
 };
