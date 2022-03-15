@@ -83,7 +83,34 @@ function createMessage(requestId) {
 module.exports.createCustomer = async (event, context, callback) => {
   const requestId = context.awsRequestId;
 
-  await createCustomerObj(requestId)
+  // await createCustomerObj(requestId)
+  //   .then(() => {
+  //     callback(
+  //       null,
+  //       response(201, "Customer " + requestId + " has been created")
+  //     );
+  //   })
+  //   .catch((err) => {
+  //     console.error(err);
+  //   });
+
+  const params = {
+    TableName: "Customers",
+    Item: {
+      id: requestId,
+      name: "Bobby",
+      iban: "AT00001" + Math.floor(Math.random() * 100),
+      address: {
+        street: "Sunnystreet 5",
+        city: "Vienna",
+        zipCode: "1130",
+      },
+    },
+  };
+
+  return ddb
+    .put(params)
+    .promise()
     .then(() => {
       callback(
         null,
@@ -95,23 +122,22 @@ module.exports.createCustomer = async (event, context, callback) => {
     });
 };
 
-function createCustomerObj(reqId) {
-  const params = {
-    TableName: "Customers",
-    Item: {
-      id: reqId,
-      name: "Bobby",
-      iban: "AT00001" + Math.floor(Math.random() * 100),
-      address: {
-        street: "Sunnystreet 5",
-        city: "Vienna",
-        zipCode: "1130",
-      },
-    },
-  };
+// function createCustomerObj(reqId) {
+//   const params = {
+//     TableName: "Customers",
+//     Item: {
+//       id: reqId,
+//       name: "Bobby",
+//       iban: "AT00001" + Math.floor(Math.random() * 100),
+//       address: {
+//         street: "Sunnystreet 5",
+//         city: "Vienna",
+//         zipCode: "1130",
+//       },
+//     },
+//   };
 
-  return ddb.put(params).promise();
-}
+// }
 
 //------FETCH CUSTOMER--------------------------------------------------------
 
