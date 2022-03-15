@@ -16,13 +16,6 @@ function response(statusCode, message) {
 
 module.exports.createCustomer = async (event, context, callback) => {
   const reqBody = JSON.parse(event.body);
-
-  if (reqBody) {
-    console.log("hello");
-  }
-
-  // const reqBody = JSON.parse(event.body);
-
   const requestId = context.awsRequestId;
 
   const params = {
@@ -87,4 +80,37 @@ module.exports.getCustomer = (event, context, callback) => {
       else callback(null, response(404, { error: "Customer not found" }));
     })
     .catch((err) => callback(null, response(err.statusCode, err)));
+};
+
+//-----------------------------------------------------------------------------------------------------
+// ----ADD TRANSACTION---------------------------------------------------------------------------------
+
+module.exports.addTransaction = async (event, context, callback) => {
+  const reqBody = JSON.parse(event.body);
+  const requestId = context.awsRequestId;
+
+  const params = {
+    TableName: "Transactions",
+    Item: {
+      id: requestId,
+      date: JSON.stringify(new Date()),
+      amount: reqBody.amount,
+      iban_from: reqBody.iban_from,
+      iban_to: reqBody.iban_to,
+      description: reqBody.description,
+    },
+  };
+
+  return ddb
+    .put(params)
+    .promise()
+    .then(() => {
+      callback(
+        null,
+        response(201, "Transaction " + requestId + " has been created")
+      );
+    })
+    .catch((err) => {
+      console.error(err);
+    });
 };

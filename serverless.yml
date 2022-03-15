@@ -32,3 +32,9 @@ functions:
       - httpApi:
           method: GET
           path: /users/getCustomer/{id}
+  addTransaction:
+    handler: handler.addTransaction
+    events:
+      - httpApi:
+          method: POST
+          path: /users/addTransaction
