@@ -81,18 +81,14 @@ function createMessage(requestId) {
 // ----CREATE CUSTOMER---------------------------------------------------------------------------------
 
 module.exports.createCustomer = async (event, context, callback) => {
-  console.log("WriteMessage2 was called....................................");
   const requestId = context.awsRequestId;
 
   await createCustomerObj(requestId)
     .then(() => {
-      callback(null, {
-        statusCode: 201,
-        body: "",
-        headers: {
-          "Access-Control-Allow-Origin": "*",
-        },
-      });
+      callback(
+        null,
+        response(201, "Customer " + requestId + " has been created")
+      );
     })
     .catch((err) => {
       console.error(err);
@@ -119,8 +115,21 @@ function createCustomerObj(reqId) {
 
 //------FETCH CUSTOMER--------------------------------------------------------
 
+function response(statusCode, message) {
+  return {
+    statusCode: statusCode,
+    body: JSON.stringify(message),
+  };
+}
 
-
-
-
-
+module.exports.fetchCustomer = (event, context, callback) => {
+  return ddb
+    .scan({
+      TableName: "Customers",
+    })
+    .promise()
+    .then((res) => {
+      callback(null, response(200, res.Items));
+    })
+    .catch((err) => callback(null, response(err.statusCode, err)));
+};
