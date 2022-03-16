@@ -123,10 +123,11 @@ module.exports.getReport = async (event, context, callback) => {
 
   const params = {
     TableName: "Transactions",
+    FilterExpression: "iban_to = :ib_to OR iban_from = :ib_from",
     ExpressionAttributeValues: {
-      ":ib": iban,
+      ":ib_to": iban,
+      ":ib_from": iban,
     },
-    FilterExpression: "iban_to = :ib",
   };
 
   return ddb
