@@ -140,9 +140,7 @@ module.exports.getReport = async (event, context, callback) => {
 
   try {
     const data = await ddb.scan(params).promise();
-
     const data2 = await ddb.scan(params2).promise();
-
     const combinedDate = { TRANSACTIONS: data, CUSTOMERS: data2 };
 
     if (combinedDate) {
@@ -158,17 +156,4 @@ module.exports.getReport = async (event, context, callback) => {
   } catch (err) {
     return callback(null, response(err.statusCode, err));
   }
-
-  // return data
-  //   .then((res) => {
-  //     if (res.Items) callback(null, response(200, res.Items));
-  //     else
-  //       callback(
-  //         null,
-  //         response(404, {
-  //           error: "No transcations were found that match that iban.",
-  //         })
-  //       );
-  //   })
-  //   .catch((err) => callback(null, response(err.statusCode, err)));
 };
